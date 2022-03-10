@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Introduction to rrMixture</title>
+
+<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Introduction to rrMixture</h1>
+
+
+
+<div id="background" class="section level2">
+<h2>Background</h2>
+<p>Consider the following multivariate linear regression model where we want to study a relationship between multiple responses and a set of predictors: <span class="math display">\[
+  Y=XB+E
+\]</span> where <span class="math inline">\(Y\)</span> is an <span class="math inline">\(n \times q\)</span> response matrix, <span class="math inline">\(X\)</span> is an <span class="math inline">\(n \times p\)</span> design matrix, <span class="math inline">\(B\)</span> is a <span class="math inline">\(p \times q\)</span> coefficient matrix, and <span class="math inline">\(E\)</span> is an <span class="math inline">\(n \times q\)</span> error matrix. To explore the relationship between <span class="math inline">\(p\)</span> predictors and <span class="math inline">\(q\)</span> responses, our interest is to estimate the coefficient matrix <span class="math inline">\(B\)</span>. Traditionally, it can be estimated by <span class="math display">\[
+  \hat{B}_L=\arg\min_{B} \|Y-XB\|^2_F=(X^\top X)^{-}X^\top Y 
+\]</span> where <span class="math inline">\(\|\cdot\|_F\)</span> denotes the Frobenius norm and <span class="math inline">\((\cdot)^{-}\)</span> denotes a Moore-Penrose inverse. This approach is simple and fast, but it has some limitations:</p>
+<ul>
+<li>It ignores the joint structure of the multivariate response.</li>
+<li>It may not be feasible with high dimensionality.</li>
+<li>It assumes a full-rank structure of the coefficient matrix.</li>
+<li>It assumes the homogeneity of data, i.e., <span class="math inline">\(n\)</span> observations come from a single group.</li>
+</ul>
+<p>To overcome the drawbacks, <code>rrmix</code> has been developed to fit reduced-rank mixture models, which <em>simultaneously</em> take into account the <em>joint structure of the multivariate response</em>, possibility of <em>low-rank structure</em> of coefficient matrix and <em>heterogeneity of data</em>.</p>
+</div>
+<div id="reduced-rank-mixture-models-in-multivariate-regression" class="section level2">
+<h2>Reduced-rank mixture models in multivariate regression</h2>
+<p>Suppose the <span class="math inline">\(n\)</span> observations belong to <span class="math inline">\(K\)</span> different subpopulations, implying the heterogeneity of data. The marginal distribution of <span class="math inline">\(\mathbf{y}_i\)</span> can be assumed to be <span class="math display">\[\begin{equation}\label{mixmodel}
+\mathbf{y}_i|\mathbf{x}_i\sim \sum_{k=1}^K \pi_k N_q(B_k^\top\mathbf{x}_i,\Sigma_k)
+\end{equation}\]</span> for <span class="math inline">\(i=1,\cdots,n\)</span> with the Gaussian assumption. Accordingly, the objective function to maximize is the log-likelihood of a <span class="math inline">\(K\)</span>-component finite Gaussian mixture model, i.e., <span class="math display">\[\begin{equation*}
+    \mathcal{L}(\boldsymbol{\theta}) = \sum_{i=1}^n \log \left[ \sum_{k=1}^K \pi_k \phi_q(\mathbf{y}_i;B_k^\top\mathbf{x}_i,\Sigma_k) \right],~~~\mathbf{y}_i \in \mathbb{R}^q,
+\end{equation*}\]</span> where <span class="math inline">\(\boldsymbol{\theta}=(\pi_1,B_1,\Sigma_1,\cdots,\pi_K,B_K,\Sigma_K)^\top\)</span> is a collection of the unknown parameters with <span class="math inline">\(\sum_{k=1}^K \pi_k=1\)</span> and <span class="math inline">\(\phi_q(\cdot;\mu,\Sigma)\)</span> denotes the density function of <span class="math inline">\(N_q(\mu,\Sigma)\)</span>. Under a reduced rank regression framework, our objective function is the penalized log-likelihood which can be written as <span class="math display">\[\begin{equation} \label{F}
+    \mathcal{F}(\boldsymbol{\theta}) = \mathcal{L}(\boldsymbol{\theta}) - \mathcal{P}_{\boldsymbol{\lambda}}(\boldsymbol{\theta}),
+\end{equation}\]</span> where <span class="math inline">\(\boldsymbol{\lambda}=(\lambda_1,\cdots,\lambda_K)^\top\)</span> is the tuning parameter. For example, the rank penalty is <span class="math display">\[\begin{equation} \label{rp}
+  \mathcal{P}_{\boldsymbol{\lambda}}(\boldsymbol{\theta}) = \frac{1}{2}\sum_{k=1}^K \lambda_k^2 \text{rank}(B_k)
+\end{equation}\]</span> and the adaptive nuclear norm penalty is <span class="math display">\[\begin{equation} \label{annp}
+  \mathcal{P}_{\boldsymbol{\lambda}}(\boldsymbol{\theta}) = \sum_{k=1}^K \lambda_k ||XB_k||_{*w}
+\end{equation}\]</span> where <span class="math inline">\(||\cdot||_{*w}=\sum_{i=1}^{p \wedge q} w_id_i(\cdot)\)</span>, <span class="math inline">\(n \wedge q = \min(n,q)\)</span>, <span class="math inline">\(w_i = d_i^{-\gamma}(X\hat{B}_L)\)</span> following Zou (2006), <span class="math inline">\(d_i(\cdot)\)</span> denotes the <span class="math inline">\(i\)</span>th largest singular value of a matrix, and <span class="math inline">\(\gamma\)</span> is a nonnegative constant. The rank-penalized and adaptive nuclear norm penalized estimation have originally been developed in Bunea et al. (2011) and Chen et al. (2013) respectively, for non-mixture cases, and adapted for an extension to mixture models in Kang et al. (2022+).</p>
+</div>
+<div id="introduction-to-rrmixture" class="section level2">
+<h2>Introduction to <code>rrMixture</code></h2>
+<p><code>rrMixture</code> is an R package for fitting reduced-rank mixture models in multivariate regression via an iterative algorithm. It allows users to</p>
+<ul>
+<li>find an optimal number of mixture components <span class="math inline">\(K\)</span> for a given data set;</li>
+<li>estimate the parameter <span class="math inline">\(\boldsymbol{\theta}=(\pi_1,B_1,\Sigma_1,\cdots,\pi_K,B_K,\Sigma_K)^\top\)</span> which maximizes <span class="math inline">\(\mathcal{F}(\boldsymbol{\theta})\)</span>;</li>
+<li>find the best tuning parameter(s) <span class="math inline">\(\boldsymbol{\lambda}=(\lambda_1,\cdots,\lambda_K)^\top\)</span> and/or <span class="math inline">\(\gamma\)</span>; and</li>
+<li>determine the ranks of <span class="math inline">\(K\)</span> coefficient matrices.</li>
+</ul>
+<p>For simplicity, we assume <span class="math inline">\(\lambda_1=\cdots=\lambda_K=\lambda\)</span> and try to find an optimal value of <span class="math inline">\(\lambda\)</span>. As of version 0.1-1, available methods are</p>
+<ul>
+<li><code>FR</code>: full-ranked estimation with <span class="math inline">\(\mathcal{P}_{\boldsymbol{\lambda}}(\boldsymbol{\theta})=0\)</span>.</li>
+<li><code>RP</code>: rank-penalized estimation with <span class="math inline">\(\mathcal{P}_{\boldsymbol{\lambda}}(\boldsymbol{\theta}) = \frac{1}{2}\lambda^2\sum_{k=1}^K \text{rank}(B_k)\)</span>.</li>
+<li><code>ANNP</code>: adaptive nuclear norm penalized estimation with <span class="math inline">\(\mathcal{P}_{\boldsymbol{\lambda}}(\boldsymbol{\theta}) = \lambda \sum_{k=1}^K ||XB_k||_{*w}\)</span>.</li>
+</ul>
+<p>This document shows how to make use of <code>rrMixture</code> functionalities. <code>rrMixture</code> also provides a set of tools to summarize and visualize the estimation results.</p>
+</div>
+<div id="getting-started-installation" class="section level2">
+<h2>Getting started: Installation</h2>
+<p><code>rrMixture</code> is available from CRAN. Install the package and load the library:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;rrMixture&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rrMixture)</span></code></pre></div>
+</div>
+<div id="a-real-data-example-tuna-data" class="section level2">
+<h2>A real data example: <code>tuna</code> data</h2>
+<p>To describe the usage of <code>rrMixture</code>, we here consider a real data set which is available within the R package <code>bayesm</code>. It contains the volume of weekly sales (<code>Move</code>) for seven of the top 10 U.S. brands in the canned tuna product category for <span class="math inline">\(n=338\)</span> weeks between September 1989 and May 1997 along with with a measure of the display activity (<code>Nsale</code>) and the log price of each brand (<code>Lprice</code>). See Chevalier et al. (2003) for details. The goal is to study the effect of prices and promotional activities on sales for these 7 products; therefore, we have the following <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> matrices and thus <span class="math inline">\(n=338\)</span>, <span class="math inline">\(q=7\)</span>, and <span class="math inline">\(p=15\)</span>. Try <code>?tuna</code> for details.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load and pre-process a data set</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bayesm)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(tuna)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>tunaY <span class="ot">&lt;-</span> <span class="fu">log</span>(tuna[, <span class="fu">c</span>(<span class="st">&quot;MOVE1&quot;</span>, <span class="st">&quot;MOVE2&quot;</span>, <span class="st">&quot;MOVE3&quot;</span>, <span class="st">&quot;MOVE4&quot;</span>, <span class="st">&quot;MOVE5&quot;</span>, <span class="st">&quot;MOVE6&quot;</span>, <span class="st">&quot;MOVE7&quot;</span>)])</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>tunaX <span class="ot">&lt;-</span> tuna[, <span class="fu">c</span>(<span class="st">&quot;NSALE1&quot;</span>, <span class="st">&quot;NSALE2&quot;</span>, <span class="st">&quot;NSALE3&quot;</span>, <span class="st">&quot;NSALE4&quot;</span>, <span class="st">&quot;NSALE5&quot;</span>, <span class="st">&quot;NSALE6&quot;</span>, <span class="st">&quot;NSALE7&quot;</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;LPRICE1&quot;</span>, <span class="st">&quot;LPRICE2&quot;</span>, <span class="st">&quot;LPRICE3&quot;</span>, <span class="st">&quot;LPRICE4&quot;</span>, <span class="st">&quot;LPRICE5&quot;</span>, <span class="st">&quot;LPRICE6&quot;</span>, <span class="st">&quot;LPRICE7&quot;</span>)]</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>tunaX <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="at">intercept =</span> <span class="dv">1</span>, tunaX)</span></code></pre></div>
+</div>
+<div id="parameter-estimation-using-rrmix" class="section level2">
+<h2>Parameter estimation using <code>rrmix()</code></h2>
+<p><code>rrmix()</code> function estimates <span class="math inline">\(\boldsymbol{\theta}\)</span> via an EM algorithm using either the full-ranked, rank penalized, or adaptive nuclear norm penalized mixture models <em>when <span class="math inline">\(K\)</span>, <span class="math inline">\(\lambda\)</span>, and <span class="math inline">\(\gamma\)</span> are given</em>; Later we will discuss another function for finding optimal values of these parameters. For <code>rrmix()</code>, we set several arguments such as:</p>
+<ul>
+<li><code>K</code>: number of mixture components.</li>
+<li><code>X</code> and <code>Y</code>: <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> matrices of data.</li>
+<li><code>est</code>: estimation method to use, either <code>&quot;FR&quot;</code> (full-ranked), <code>&quot;RP&quot;</code> (rank penalized), or <code>&quot;ANNP&quot;</code> (adaptive nuclear norm penalized).</li>
+<li><code>lambda</code> and <code>gamma</code>: tuning parameter(s) to set. <code>lambda</code> is only used for <code>&quot;RP&quot;</code> and <code>&quot;ANNP&quot;</code>, and <code>gamma</code> is only used for <code>&quot;ANNP&quot;</code>.</li>
+</ul>
+<p>In order to implement the EM algorithm, we need starting values of <span class="math inline">\(\boldsymbol{\theta}\)</span> which can be set by the following arguments:</p>
+<ul>
+<li><code>n.init</code>: number of repetitions of initialization to try. Note that the final estimates of <span class="math inline">\(\boldsymbol{\theta}\)</span> depends on the starting values, so we try to get starting values <code>n.init</code> times and use the one with the largest log-likelihood as the final starting values. In order to assign initial mixture membership to each observation, two methods are used: K-means and random clustering.</li>
+<li><code>seed</code> (optional): seed number for reproducibility of starting values.</li>
+</ul>
+<p>An example with <code>tuna</code> data:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameter estimation with `rrmix()` using the rank penalized method</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>tuna.mod <span class="ot">&lt;-</span> <span class="fu">rrmix</span>(<span class="at">K =</span> <span class="dv">2</span>, <span class="at">X =</span> tunaX, <span class="at">Y =</span> tunaY, <span class="at">est =</span> <span class="st">&quot;RP&quot;</span>, <span class="at">lambda =</span> <span class="dv">3</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">seed =</span> <span class="dv">100</span>, <span class="at">n.init =</span> <span class="dv">100</span>)</span></code></pre></div>
+<p>We can find the estimated parameters, <span class="math inline">\(\hat{\boldsymbol{\theta}}=(\hat\pi_1,\hat{B}_1,\hat\Sigma_1,\cdots,\hat\pi_K,\hat{B}_K,\hat\Sigma_K)^\top\)</span>, with the command <code>tuna.mod$para</code>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimated parameters</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>tuna.mod<span class="sc">$</span>para</span></code></pre></div>
+<pre><code>## [[1]]
+## [[1]]$pi
+## [1] 0.8793335
+## 
+## [[1]]$B
+##                  MOVE1       MOVE2       MOVE3       MOVE4       MOVE5        MOVE6       MOVE7
+## intercept  9.697739196  9.58004404 10.25972900 11.48293812  9.57257811  5.286435408 16.88180893
+## NSALE1     0.264758797 -0.07357711  0.08848321 -0.06317495 -0.03905764  0.168597790 -0.34082103
+## NSALE2    -0.030891006  0.15074311 -0.06805328 -0.17671419 -0.04559106  0.136535925 -0.19511789
+## NSALE3    -0.167928967 -0.03270118  0.12373708  0.00584671  0.09893268 -0.006719683 -0.13678998
+## NSALE4    -0.046126451 -0.05398677  0.02909986 -0.06003936 -0.11198196 -0.030637909  0.01746416
+## NSALE5     0.037234871  0.10131262 -0.03173598  0.12825966  0.13640425 -0.019036824 -0.30948403
+## NSALE6    -0.105596185 -0.11328508 -0.06710156 -0.16378112 -0.10056351  0.452642652 -0.24536842
+## NSALE7     0.009898625 -0.13428886 -0.02874585 -0.19134459 -0.02986234 -0.103503684  0.50989322
+## LPRICE1   -3.620489328  1.10874628  0.43853735  1.44290680 -0.07191063  0.274192590  0.21678455
+## LPRICE2    0.605598440 -5.23779722  0.05152277  1.04481042 -0.16159788  0.315346800 -0.26706440
+## LPRICE3   -1.312250355 -1.65032984 -4.18091735 -0.72328165  1.07934056  0.019059245 -0.48474486
+## LPRICE4    0.757267996  0.91868374 -0.03822025 -5.00462654 -0.39856090 -0.043581011  0.28513770
+## LPRICE5    1.245436719  1.85257681  0.32397858  0.74684669 -3.89550148  0.998771021 -0.92707576
+## LPRICE6   -0.356928595 -0.98490400 -0.23129587 -2.43450428 -0.79775535  0.889300225 -6.44645553
+## LPRICE7    0.245307808 -0.32982140 -0.43982712 -0.16059763 -0.13203062 -0.441057708 -2.18630625
+## 
+## [[1]]$Sigma
+##             MOVE1        MOVE2        MOVE3       MOVE4       MOVE5        MOVE6        MOVE7
+## MOVE1  0.10027979  0.022850112  0.014598890  0.03336132 0.019478733 -0.012177185  0.011459331
+## MOVE2  0.02285011  0.239894750  0.021559759  0.02377434 0.031907926 -0.009215861 -0.008205517
+## MOVE3  0.01459889  0.021559759  0.042124926  0.03644332 0.009534536  0.006753641 -0.004059046
+## MOVE4  0.03336132  0.023774343  0.036443316  0.23853304 0.017091292 -0.018254510 -0.011638096
+## MOVE5  0.01947873  0.031907926  0.009534536  0.01709129 0.035661859  0.001658638  0.006083920
+## MOVE6 -0.01217719 -0.009215861  0.006753641 -0.01825451 0.001658638  0.086088152 -0.026781412
+## MOVE7  0.01145933 -0.008205517 -0.004059046 -0.01163810 0.006083920 -0.026781412  0.302357944
+## 
+## 
+## [[2]]
+## [[2]]$pi
+## [1] 0.1206665
+## 
+## [[2]]$B
+##                MOVE1      MOVE2       MOVE3        MOVE4       MOVE5        MOVE6        MOVE7
+## intercept 12.1618998  6.8135406 -19.7848459 11.134598356  8.36894956 -25.31234680 18.074540867
+## NSALE1    -1.3799401  0.1082732   0.7756834  0.192467305  0.02149564   0.48124630 -0.024485074
+## NSALE2     0.9309726  0.2748817   0.4271569 -0.706356643  0.10207620   0.97518008 -0.730762472
+## NSALE3     1.9937937 -0.6066941  -0.1480685 -0.351401019  0.09757915   0.36671402 -0.407156358
+## NSALE4     0.9637697  0.7211725   0.8428552 -0.005961994  0.69405966   0.86280190 -0.496122471
+## NSALE5    -0.4147939  0.2721955   0.2844473  0.004886992  0.02884490   0.04020195 -0.021491251
+## NSALE6    -0.6720243  0.2854669   1.3906442  0.509588914  0.16743924   0.77558586 -0.030125194
+## NSALE7     1.2294988 -0.0724503  -2.0590187  0.245503899  0.27764132  -1.67780746 -0.004936125
+## LPRICE1   -5.1225754  0.8407906   3.0890073  0.683339339 -0.11384347   3.81927062  0.914629856
+## LPRICE2    1.0451861 -3.7460418  -1.8067515 -0.997563203 -0.28016256   0.22614671 -0.232220724
+## LPRICE3    8.5212020 -1.3526899 -22.3310971  0.762034375 -2.52342959 -13.92983469 -0.627547939
+## LPRICE4    3.9312856  2.4825187  -6.8921826 -2.987481081  4.06841349  -1.37724156 -0.484910359
+## LPRICE5    0.8080700 -0.3677838  12.9709864 -1.101818729 -6.81076437  -1.69780303 -0.459393781
+## LPRICE6   -5.8970984  2.1119481  24.5489270 -2.058549217  3.42907251  32.07627090 -7.890724801
+## LPRICE7    1.6976674 -0.2024230  -9.9204652  1.918824618  0.70354917  -4.31166964 -4.466990108
+## 
+## [[2]]$Sigma
+##              MOVE1       MOVE2        MOVE3        MOVE4       MOVE5       MOVE6       MOVE7
+## MOVE1  0.462506694 -0.06348751  0.138542542  0.008465615 -0.01694162  0.01851249 -0.09422843
+## MOVE2 -0.063487506  0.07349867 -0.088111118  0.029005883  0.03317261 -0.07376150  0.02811246
+## MOVE3  0.138542542 -0.08811112  1.173924092  0.008063392 -0.14678689  0.84098527 -0.10013659
+## MOVE4  0.008465615  0.02900588  0.008063392  0.080053501  0.01148986 -0.02862116  0.02509401
+## MOVE5 -0.016941616  0.03317261 -0.146786892  0.011489858  0.05605736 -0.12300356  0.03315975
+## MOVE6  0.018512495 -0.07376150  0.840985267 -0.028621155 -0.12300356  0.73881130 -0.03049476
+## MOVE7 -0.094228429  0.02811246 -0.100136595  0.025094013  0.03315975 -0.03049476  0.07795657</code></pre>
+<p>Besides the estimated parameter <span class="math inline">\(\hat{\boldsymbol{\theta}}\)</span>, one of the fundamental tasks in reduced rank estimation is <em>rank determination</em>. The estimated ranks of <span class="math inline">\(K\)</span> coefficient matrices can be found by <code>tuna.mod$est.rank</code> as follows. In this case with <span class="math inline">\(\lambda = 3\)</span>, both coefficient matrices turned out to have full rank since <span class="math inline">\(\min(p,q)=7\)</span>.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimated ranks of coefficient matrices</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>tuna.mod<span class="sc">$</span>est.rank</span></code></pre></div>
+<pre><code>## [1] 7 7</code></pre>
+<p>The package provides <code>summary()</code> and <code>plot()</code> methods for the <code>rrmix</code> object. With the <code>summary()</code> function, we can see summarized information of the fitted model. We can see that the EM algorithm is terminated after 57 iterations and the BIC of the fitted model is 3115.056.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Summarize the estimation results</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(tuna.mod)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## rrmix(K = 2, X = tunaX, Y = tunaY, est = &quot;RP&quot;, lambda = 3, seed = 100, n.init = 100)
+## 
+## 
+## 
+## Method:  Rank penalized mixture 
+## 
+## Initialization:  K-means and random clustering 
+## 
+## Tuning Parameters:
+##  lambda:  3 
+## 
+## Fitted Model:
+##      Number of components:  2 
+##            Log-likelihood:  -780.1514 
+##  Penalized log-likelihood:  -843.1514 
+##                       BIC:  3115.056 
+## 
+## 
+## Number of Iterations:  57</code></pre>
+<p>The <code>plot()</code> function shows the log-likelihood and penalized log-likelihood values at each iteration as can be seen below. The ascent property of the penalized log-likelihood can be observed.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the estimation results</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(tuna.mod)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<pre><code>## 
+## F: Penalized log-likelihood
+## L: Log-likelihood</code></pre>
+</div>
+<div id="parameter-tuning-with-tune.rrmix" class="section level2">
+<h2>Parameter tuning with <code>tune.rrmix()</code></h2>
+<p>As shown above, the <code>rrmix()</code> function estimates parameters with fixed <span class="math inline">\(K\)</span> (number of mixture components), <span class="math inline">\(\lambda\)</span> and <span class="math inline">\(\gamma\)</span> (tuning parameters). In practice, choosing proper values of <span class="math inline">\(K\)</span>, <span class="math inline">\(\lambda\)</span> and <span class="math inline">\(\gamma\)</span> is important. This can be done using the <code>tune.rrmix()</code> function by performing a grid search over user-specified parameter ranges. Notice that the full-ranked method (<code>&quot;FR&quot;</code>) has no tuning parameters, the rank penalized method (<code>&quot;RP&quot;</code>) only has one tuning parameter, <span class="math inline">\(\lambda\)</span>. The adaptive nuclear norm penalized method (<code>&quot;ANNP&quot;</code>) has two tuning parameters, <span class="math inline">\(\lambda\)</span> and <span class="math inline">\(\gamma\)</span>.</p>
+<p>Suppose one wants to tune <span class="math inline">\(\lambda\)</span> for the rank penalized method with fixed <span class="math inline">\(K=2\)</span>. We can try the following with a set of candidate values of <span class="math inline">\(\lambda\)</span>:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameter tuning with `tune.rrmix()` using the rank penalized method</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>tuna.tune1 <span class="ot">&lt;-</span> <span class="fu">tune.rrmix</span>(<span class="at">K =</span> <span class="dv">2</span>, <span class="at">X =</span> tunaX, <span class="at">Y =</span> tunaY, <span class="at">est =</span> <span class="st">&quot;RP&quot;</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">lambda =</span> <span class="fu">exp</span>(<span class="fu">seq</span>(<span class="dv">0</span>, <span class="fu">log</span>(<span class="dv">20</span>), <span class="at">length =</span> <span class="dv">20</span>)),</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">seed =</span> <span class="dv">100</span>, <span class="at">n.init =</span> <span class="dv">100</span>)</span></code></pre></div>
+<p>The <code>tune.rrmix</code> object also has <code>summary()</code> and <code>plot()</code> methods. Both functions find an optimal tuning parameter that provides the best performance metric - the smallest BIC in this case - among the given set of candidate values.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Summarize the results</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(tuna.tune1)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## tune.rrmix(K = 2, X = tunaX, Y = tunaY, est = &quot;RP&quot;, lambda = exp(seq(0, log(20), length = 20)), seed = 100, n.init = 100)
+## 
+## 
+## Parameter tuning of &#39;rrmix&#39;:
+## 
+## - Method: Rank penalized mixture 
+## 
+## - Initialization:  K-means and random clustering 
+## 
+## - Performance metric: bic 
+## 
+## - Best performance: 2963.037 
+## 
+## - Best parameters:
+##  K  lambda
+##  2 9.09188
+## 
+## - Detailed performance results:
+##    K    lambda     loglik    penalty  penloglik npar      bic est.rank1 est.rank2
+## 1  2  1.000000  -780.1514   7.000000  -787.1514  267 3115.056         7         7
+## 2  2  1.170780  -780.1514   9.595079  -789.7465  267 3115.056         7         7
+## 3  2  1.370726  -780.1514  13.152221  -793.3036  267 3115.056         7         7
+## 4  2  1.604818  -780.1514  18.028086  -798.1795  267 3115.056         7         7
+## 5  2  1.878889  -780.1514  24.711559  -804.8630  267 3115.056         7         7
+## 6  2  2.199765  -780.1514  33.872767  -814.0242  267 3115.056         7         7
+## 7  2  2.575441  -780.1514  46.430269  -826.5817  267 3115.056         7         7
+## 8  2  3.015274  -780.1514  63.643158  -843.7946  267 3115.056         7         7
+## 9  2  3.530223  -780.1514  87.237306  -867.3887  267 3115.056         7         7
+## 10 2  4.133114  -778.9185 111.037095  -889.9556  258 3060.183         7         6
+## 11 2  4.838967  -778.9185 152.201389  -931.1199  258 3060.183         7         6
+## 12 2  5.665365  -778.9185 208.626341  -987.5448  258 3060.183         7         6
+## 13 2  6.632896  -756.4340 285.969468 -1042.4035  258 3015.214         7         6
+## 14 2  7.765661  -798.5918 361.832928 -1160.4247  247 3035.476         7         5
+## 15 2  9.091880  -800.2222 454.642521 -1254.8648  234 2963.037         7         4
+## 16 2 10.644590  -906.4122 566.536496 -1472.9487  225 3123.010         6         4
+## 17 2 12.462472 -1139.2845 543.596258 -1682.8807  186 3361.655         4         3
+## 18 2 14.590812 -1149.9582 638.675408 -1788.6336  169 3284.011         4         2
+## 19 2 17.082630 -1149.9582 875.448736 -2025.4070  169 3284.011         4         2
+## 20 2 20.000000 -1350.4807 800.000000 -2150.4807  135 3487.073         3         1</code></pre>
+<p>When only one parameter is considered for tuning with other parameters being fixed, the parameter is on the x-axis and the performance metric is on the y-axis when using the <code>plot()</code> function. In this case, we use a grid of 20 <span class="math inline">\(\lambda\)</span> values equally spaced on the <em>log</em> scale, we can set <code>transform.x = log</code> for a better illustration.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the results</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(tuna.tune1, <span class="at">transform.x =</span> log, <span class="at">xlab =</span> <span class="st">&quot;log(lambda)&quot;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>Now suppose one wants to tune both <span class="math inline">\(K\)</span> and <span class="math inline">\(\lambda\)</span>. We can try the following command with setting <code>K.max</code> instead of <code>K</code>. If <code>K.max</code> is 3, the <code>tune.rrmix()</code> function try all cases where <span class="math inline">\(K\)</span> is 1 through 3. Note that <span class="math inline">\(K=1\)</span> indicates a non-mixture case. Hence, the <code>tune.rrmix()</code> function can automatically examine whether assuming heterogeneity of data is appropriate for a given data set.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameter tuning with `tune.rrmix()` using the rank penalized method</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>tuna.tune2 <span class="ot">&lt;-</span> <span class="fu">tune.rrmix</span>(<span class="at">K.max =</span> <span class="dv">3</span>, <span class="at">X =</span> tunaX, <span class="at">Y =</span> tunaY, <span class="at">est =</span> <span class="st">&quot;RP&quot;</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">lambda =</span> <span class="fu">exp</span>(<span class="fu">seq</span>(<span class="dv">0</span>, <span class="fu">log</span>(<span class="dv">20</span>), <span class="at">length =</span> <span class="dv">20</span>)),</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">seed =</span> <span class="dv">100</span>, <span class="at">n.init =</span> <span class="dv">100</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Summarize the results</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(tuna.tune2)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## tune.rrmix(K.max = 3, X = tunaX, Y = tunaY, est = &quot;RP&quot;, lambda = exp(seq(0, log(20), length = 20)), seed = 100, n.init = 100)
+## 
+## 
+## Parameter tuning of &#39;rrmix&#39;:
+## 
+## - Method: Rank penalized mixture 
+## 
+## - Initialization:  K-means and random clustering 
+## 
+## - Performance metric: bic 
+## 
+## - Best performance: 2963.037 
+## 
+## - Best parameters:
+##  K  lambda
+##  2 9.09188
+## 
+## - Detailed performance results:
+##    K    lambda     loglik     penalty  penloglik npar      bic est.rank1 est.rank2 est.rank3
+## 1  1  1.000000 -1377.0748    7.000000 -1384.0748  133 3528.615         7        NA        NA
+## 2  1  1.170780 -1377.0748    9.595079 -1386.6699  133 3528.615         7        NA        NA
+## 3  1  1.370726 -1377.0748   13.152221 -1390.2271  133 3528.615         7        NA        NA
+## 4  1  1.604818 -1377.0748   18.028086 -1395.1029  133 3528.615         7        NA        NA
+## 5  1  1.878889 -1377.0748   24.711559 -1401.7864  133 3528.615         7        NA        NA
+## 6  1  2.199765 -1377.0748   33.872767 -1410.9476  133 3528.615         7        NA        NA
+## 7  1  2.575441 -1377.0748   46.430269 -1423.5051  133 3528.615         7        NA        NA
+## 8  1  3.015274 -1434.5586   54.551278 -1489.1098  124 3591.175         6        NA        NA
+## 9  1  3.530223 -1434.5586   74.774834 -1509.3334  124 3591.175         6        NA        NA
+## 10 1  4.133114 -1434.5586  102.495780 -1537.0543  124 3591.175         6        NA        NA
+## 11 1  4.838967 -1566.3163  117.077991 -1683.3943  113 3790.637         5        NA        NA
+## 12 1  5.665365 -1566.3163  160.481801 -1726.7981  113 3790.637         5        NA        NA
+## 13 1  6.632896 -1566.3163  219.976514 -1786.2928  113 3790.637         5        NA        NA
+## 14 1  7.765661 -1566.3163  301.527440 -1867.8438  113 3790.637         5        NA        NA
+## 15 1  9.091880 -1741.3884  247.986830 -1989.3752   85 3977.736         3        NA        NA
+## 16 1 10.644590 -1741.3884  339.921898 -2081.3103   85 3977.736         3        NA        NA
+## 17 1 12.462472 -1741.3884  465.939649 -2207.3280   85 3977.736         3        NA        NA
+## 18 1 14.590812 -1941.6003  425.783606 -2367.3839   68 4279.168         2        NA        NA
+## 19 1 17.082630 -2173.2818  291.816245 -2465.0980   49 4631.893         1        NA        NA
+## 20 1 20.000000 -2173.2818  400.000000 -2573.2818   49 4631.893         1        NA        NA
+## 21 2  1.000000  -780.1514    7.000000  -787.1514  267 3115.056         7         7        NA
+## 22 2  1.170780  -780.1514    9.595079  -789.7465  267 3115.056         7         7        NA
+## 23 2  1.370726  -780.1514   13.152221  -793.3036  267 3115.056         7         7        NA
+## 24 2  1.604818  -780.1514   18.028086  -798.1795  267 3115.056         7         7        NA
+## 25 2  1.878889  -780.1514   24.711559  -804.8630  267 3115.056         7         7        NA
+## 26 2  2.199765  -780.1514   33.872767  -814.0242  267 3115.056         7         7        NA
+## 27 2  2.575441  -780.1514   46.430269  -826.5817  267 3115.056         7         7        NA
+## 28 2  3.015274  -780.1514   63.643158  -843.7946  267 3115.056         7         7        NA
+## 29 2  3.530223  -780.1514   87.237306  -867.3887  267 3115.056         7         7        NA
+## 30 2  4.133114  -778.9185  111.037095  -889.9556  258 3060.183         7         6        NA
+## 31 2  4.838967  -778.9185  152.201389  -931.1199  258 3060.183         7         6        NA
+## 32 2  5.665365  -778.9185  208.626341  -987.5448  258 3060.183         7         6        NA
+## 33 2  6.632896  -756.4340  285.969468 -1042.4035  258 3015.214         7         6        NA
+## 34 2  7.765661  -798.5918  361.832928 -1160.4247  247 3035.476         7         5        NA
+## 35 2  9.091880  -800.2222  454.642521 -1254.8648  234 2963.037         7         4        NA
+## 36 2 10.644590  -906.4122  566.536496 -1472.9487  225 3123.010         6         4        NA
+## 37 2 12.462472 -1139.2845  543.596258 -1682.8807  186 3361.655         4         3        NA
+## 38 2 14.590812 -1149.9582  638.675408 -1788.6336  169 3284.011         4         2        NA
+## 39 2 17.082630 -1149.9582  875.448736 -2025.4070  169 3284.011         4         2        NA
+## 40 2 20.000000 -1350.4807  800.000000 -2150.4807  135 3487.073         3         1        NA
+## 41 3  1.000000  -416.3847   10.500000  -426.8847  401 3167.811         7         7         7
+## 42 3  1.170780  -416.3847   14.392619  -430.7774  401 3167.811         7         7         7
+## 43 3  1.370726  -416.3847   19.728331  -436.1131  401 3167.811         7         7         7
+## 44 3  1.604818  -416.3847   27.042129  -443.4269  401 3167.811         7         7         7
+## 45 3  1.878889  -416.3847   37.067338  -453.4521  401 3167.811         7         7         7
+## 46 3  2.199765  -416.3847   50.809150  -467.1939  401 3167.811         7         7         7
+## 47 3  2.575441  -416.3847   69.645403  -486.0301  401 3167.811         7         7         7
+## 48 3  3.015274  -416.3847   95.464737  -511.8495  401 3167.811         7         7         7
+## 49 3  3.530223  -416.3847  130.855959  -547.2407  401 3167.811         7         7         7
+## 50 3  4.133114  -416.3847  179.367614  -595.7524  401 3167.811         7         7         7
+## 51 3  4.838967  -434.3091  234.155983  -668.4651  392 3151.252         6         7         7
+## 52 3  5.665365  -486.5614  304.915421  -791.4769  383 3203.349         6         7         6
+## 53 3  6.632896  -555.2958  417.955376  -973.2512  383 3340.818         6         7         6
+## 54 3  7.765661  -547.1041  512.596648 -1059.7007  361 3196.328         5         7         5
+## 55 3  9.091880  -667.3193  619.967075 -1287.2864  339 3308.651         5         6         4
+## 56 3 10.644590  -823.4459  736.497445 -1559.9434  315 3481.151         5         4         4
+## 57 3 12.462472  -878.4625  931.879299 -1810.3418  300 3503.839         5         4         3
+## 58 3 14.590812  -973.6083  958.013112 -1931.6215  255 3432.093         3         4         2
+## 59 3 17.082630 -1090.1773  875.448736 -1965.6260  204 3368.256         1         3         2
+## 60 3 20.000000 -1379.2821 1000.000000 -2379.2821  187 3847.474         1         2         2</code></pre>
+<p>When <span class="math inline">\(K\)</span> and <span class="math inline">\(\lambda\)</span> are tuned, a contour plot of the performance metric (BIC) can be drawn using the <code>plot()</code> function with <span class="math inline">\(K\)</span> and <span class="math inline">\(\lambda\)</span> being on the x- and y-axis, respectively.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the results</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(tuna.tune2, <span class="at">transform.y =</span> log, <span class="at">ylab =</span> <span class="st">&quot;log(lambda)&quot;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>As we can see above, the best model is the one with <span class="math inline">\(K=2\)</span> and <span class="math inline">\(\lambda = 8.728963\)</span>, implying that the data is heterogeneous and consisting of 2 subpopulations.</p>
+<p>Note also that, if candidate values of <span class="math inline">\(\lambda\)</span> are not pre-specified, i.e., if <code>lambda = NULL</code> in <code>tune.rrmix()</code>, a data-adaptive range of <span class="math inline">\(\lambda\)</span> for tuning will internally be determined. In this case, users can set the argument <code>n.lambda</code> which specifies the number of <span class="math inline">\(\lambda\)</span> values to be explored in the range. Furthermore, if candidate values of <span class="math inline">\(\gamma\)</span> are not specified with <code>est = &quot;ANNP&quot;</code> in <code>tune.rrmix()</code>, <code>gamma = 2</code> will be used by default since it generally showed good performance in Chen et al. (2013).</p>
+</div>
+<div id="interpretation-of-final-model" class="section level2">
+<h2>Interpretation of final model</h2>
+<p>Let’s see how we can interpret the final model determined by <code>tune.rrmix()</code>. As mentioned earlier, <span class="math inline">\(\hat{\boldsymbol{\theta}}=(\hat\pi_1,\hat{B}_1,\hat\Sigma_1,\cdots,\hat\pi_K,\hat{B}_K,\hat\Sigma_K)^\top\)</span> can be obtained by <code>best.mod$para</code>.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The final model</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>best.K <span class="ot">&lt;-</span> <span class="fu">summary</span>(tuna.tune2)<span class="sc">$</span>best.K</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>best.lambda <span class="ot">&lt;-</span> <span class="fu">summary</span>(tuna.tune2)<span class="sc">$</span>best.lambda</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>best.mod <span class="ot">&lt;-</span> <span class="fu">rrmix</span>(<span class="at">K =</span> best.K, <span class="at">X =</span> tunaX, <span class="at">Y =</span> tunaY, <span class="at">est =</span> <span class="st">&quot;RP&quot;</span>, <span class="at">lambda =</span> best.lambda,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>                  <span class="at">seed =</span> <span class="dv">100</span>, <span class="at">n.init =</span> <span class="dv">100</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(best.mod)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## rrmix(K = best.K, X = tunaX, Y = tunaY, est = &quot;RP&quot;, lambda = best.lambda, seed = 100, n.init = 100)
+## 
+## 
+## 
+## Method:  Rank penalized mixture 
+## 
+## Initialization:  K-means and random clustering 
+## 
+## Tuning Parameters:
+##  lambda:  9.09188 
+## 
+## Fitted Model:
+##      Number of components:  2 
+##            Log-likelihood:  -800.2222 
+##  Penalized log-likelihood:  -1254.865 
+##                       BIC:  2963.037 
+## 
+## 
+## Number of Iterations:  54</code></pre>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>best.mod<span class="sc">$</span>para</span></code></pre></div>
+<pre><code>## [[1]]
+## [[1]]$pi
+## [1] 0.881181
+## 
+## [[1]]$B
+##                  MOVE1       MOVE2       MOVE3         MOVE4       MOVE5        MOVE6       MOVE7
+## intercept  9.831832635  9.65864042 10.14738007 11.1979483392  9.48687846  6.153218054 17.18630762
+## NSALE1     0.245720206 -0.07798723  0.08916616 -0.0549966149 -0.03548999  0.143390850 -0.36154379
+## NSALE2    -0.036411994  0.14667386 -0.06105783 -0.1633427541 -0.03813799  0.100875057 -0.21237738
+## NSALE3    -0.175968205 -0.03849338  0.11794301  0.0003528289  0.09136335 -0.006991503 -0.13725684
+## NSALE4    -0.011456346 -0.03916083  0.03453038 -0.0711003217 -0.10492094 -0.024757594  0.02609806
+## NSALE5     0.046909727  0.10183915 -0.03315014  0.1204480450  0.13378362 -0.015261578 -0.30355839
+## NSALE6    -0.110186495 -0.11943755 -0.06486655 -0.1577068083 -0.09670243  0.409968442 -0.25879877
+## NSALE7     0.004071193 -0.13539608 -0.01688634 -0.1759992155 -0.02189734 -0.137505047  0.50195911
+## LPRICE1   -3.672011093  1.10326249  0.41067244  1.4165535971 -0.08589023  0.314033147  0.19650308
+## LPRICE2    0.596909979 -5.25728296  0.06323593  1.0739359825 -0.16848094  0.229513404 -0.29174927
+## LPRICE3   -1.306251346 -1.65267666 -4.21361349 -0.7814175830  0.99484564  0.165184982 -0.41794841
+## LPRICE4    0.786561736  0.93243282 -0.01614248 -4.9895399813 -0.38006124 -0.058316769  0.28721163
+## LPRICE5    1.375630514  1.88822889  0.44238323  0.8539790130 -3.87533825  0.407177105 -1.03070115
+## LPRICE6   -0.502635251 -1.05582296 -0.16117212 -2.2058663320 -0.70630650  0.294804445 -6.68745467
+## LPRICE7    0.275847305 -0.31984729 -0.42179987 -0.1370997993 -0.14293543 -0.555428679 -2.19622222
+## 
+## [[1]]$Sigma
+##             MOVE1        MOVE2        MOVE3       MOVE4       MOVE5        MOVE6        MOVE7
+## MOVE1  0.10433508  0.023733541  0.015521534  0.03247732 0.019452039 -0.014019707  0.011213734
+## MOVE2  0.02373354  0.239529549  0.022272681  0.02428049 0.032421400 -0.011098250 -0.009117916
+## MOVE3  0.01552153  0.022272681  0.042279754  0.03658732 0.010310018  0.008806337 -0.003876825
+## MOVE4  0.03247732  0.024280488  0.036587324  0.23743596 0.017621679 -0.013435994 -0.010668746
+## MOVE5  0.01945204  0.032421400  0.010310018  0.01762168 0.037183284  0.003938157  0.005520488
+## MOVE6 -0.01401971 -0.011098250  0.008806337 -0.01343599 0.003938157  0.066793640 -0.034358863
+## MOVE7  0.01121373 -0.009117916 -0.003876825 -0.01066875 0.005520488 -0.034358863  0.298840993
+## 
+## 
+## [[2]]
+## [[2]]$pi
+## [1] 0.118819
+## 
+## [[2]]$B
+##                 MOVE1       MOVE2        MOVE3       MOVE4        MOVE5        MOVE6       MOVE7
+## intercept 10.75741485  3.05845114  24.58595902 11.65593374  4.356064495  6.222446295 15.38872468
+## NSALE1    -0.05534936  0.05831940   0.12594001  0.14424588  0.006196908  0.034632335 -0.05045462
+## NSALE2     0.06893836  0.49625290  -1.39789028 -0.62327880  0.183635380 -0.099207906 -0.36455311
+## NSALE3     0.35931685 -0.27753088  -1.12758206 -0.34110929  0.310196484 -0.006793506  0.11600480
+## NSALE4     0.17604880  0.86240476  -1.52812832 -0.32588892  0.437330138  0.065938270 -0.42558206
+## NSALE5    -0.05791128  0.22839832   0.18319877  0.06554551 -0.028323271  0.021209575 -0.05856984
+## NSALE6     0.01319062  0.28873577   0.57403352  0.53897724  0.115680162  0.190861213  0.04077665
+## NSALE7     0.27858992 -0.01130092  -0.26308287 -0.06083649  0.185879055  0.061231734  0.20101446
+## LPRICE1   -0.07084777  0.50773376   0.52030640  0.83309298  0.235197471  0.288331118 -0.15013008
+## LPRICE2    0.02204864 -3.47196226  -2.94020979 -1.05188581  0.005805008 -0.563784272  0.02242193
+## LPRICE3   -2.16412699 -1.48644936  -0.03924001  0.07432347 -1.213040603 -0.683191409 -1.80261974
+## LPRICE4    3.57952823  2.78110427 -10.34939108 -4.40864029  2.944292619  0.068353213  0.42155101
+## LPRICE5   -3.90373082  0.72735230  10.26220480 -2.58037770 -5.788255976 -2.167315583 -0.37680378
+## LPRICE6    1.70570061  4.94764428 -20.55093102 -2.16448806  5.870869263  0.849327803 -5.32076485
+## LPRICE7   -1.89520208  0.26344154  -5.69867364  0.60316534  0.825501480 -0.091956650 -3.72405036
+## 
+## [[2]]$Sigma
+##             MOVE1       MOVE2      MOVE3       MOVE4       MOVE5       MOVE6       MOVE7
+## MOVE1  1.55349212 -0.21819091  0.4478371  0.01521395 -0.08972691  0.02398342 -0.34739213
+## MOVE2 -0.21819091  0.10541875 -0.2066950  0.03113594  0.04890543 -0.12597494  0.07756811
+## MOVE3  0.44783706 -0.20669504  2.3161115 -0.09818200 -0.17691700  1.51793400 -0.35143336
+## MOVE4  0.01521395  0.03113594 -0.0981820  0.08974138  0.02265828 -0.11688499  0.01242897
+## MOVE5 -0.08972691  0.04890543 -0.1769170  0.02265828  0.09515097 -0.21162975  0.02438693
+## MOVE6  0.02398342 -0.12597494  1.5179340 -0.11688499 -0.21162975  1.33305219 -0.08158394
+## MOVE7 -0.34739213  0.07756811 -0.3514334  0.01242897  0.02438693 -0.08158394  0.17317664</code></pre>
+<p>The estimated ranks of <span class="math inline">\(\hat{B}_1\)</span> and <span class="math inline">\(\hat{B}_2\)</span> are 7 and 4, respectively, as follows. In this case, the first coefficient matrix turned out to have full rank and the second coefficient matrix had low-rank structure since full rank is <span class="math inline">\(\min(p,q)=7\)</span>.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimated ranks of coefficient matrices</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>best.mod<span class="sc">$</span>est.rank</span></code></pre></div>
+<pre><code>## [1] 7 4</code></pre>
+<p>We can also get information on the membership of mixture components using the following command. The final model suggests that, among <span class="math inline">\(n=338\)</span> observations, 299 observations belong to the first mixture component and the remaining 39 observations belong to the second mixture component.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Membership information of mixture components</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>best.mod<span class="sc">$</span>ind</span></code></pre></div>
+<pre><code>##   [1] 1 1 1 1 1 1 1 1 1 1 2 1 1 1 1 1 2 1 1 1 1 1 1 1 2 1 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 1 1 1 2 1 1 2 1 1 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+##  [98] 1 1 1 1 1 1 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 1 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 1 1 1 1 1 1 1 1 1 1 1 1 1 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+## [195] 1 1 1 1 1 1 2 2 1 1 1 1 1 1 1 1 1 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 1 1 1 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+## [292] 1 1 1 1 1 1 1 1 1 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 1 1 1 1 1 1 1</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>best.mod<span class="sc">$</span>n.est</span></code></pre></div>
+<pre><code>## [1] 298  40</code></pre>
+</div>
+<div id="comparison-with-existing-r-package-rrpack" class="section level2">
+<h2>Comparison with existing R package <code>rrpack</code></h2>
+<p>The package <code>rrpack</code> allows users to use a variety of reduced-rank estimation methods in multivariate regression. For example, the <code>rrr()</code> function with the argument <code>penaltySVD = &quot;ann&quot;</code> provides a solution of the adaptive nuclear norm penalized estimator (Chen et al., 2013). One difference between the <code>rrr()</code> function from the <code>rrpack</code> package and the <code>rrmix()</code> function from the <code>rrMixture</code> package is that <code>rrmix()</code> incorporates the idea of mixture models. Therefore, when the number of mixture components is <span class="math inline">\(K=1\)</span>, <code>rrmix()</code> produces the same solution with that of <code>rrr()</code> with the same tuning parameter(s). Let’s see an example using the <code>tuna</code> data.</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># rrpack package</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(rrpack)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>rfit <span class="ot">&lt;-</span> <span class="fu">rrr</span>(<span class="at">Y =</span> <span class="fu">as.matrix</span>(tunaY), <span class="at">X =</span> <span class="fu">as.matrix</span>(tunaX),</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">modstr =</span> <span class="fu">list</span>(<span class="at">lambda =</span> <span class="dv">3</span>, <span class="at">gamma =</span> <span class="dv">2</span>), <span class="at">penaltySVD =</span> <span class="st">&quot;ann&quot;</span>)</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="co"># estimated coefficient matrix</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(rfit)</span></code></pre></div>
+<pre><code>##                  [,1]        [,2]        [,3]        [,4]        [,5]        [,6]        [,7]
+## intercept 11.03998749  9.83249740  3.56373788 10.70868788 10.19160504  2.72918239 16.83806187
+## NSALE1     0.07121642 -0.08071614  0.39618150 -0.06486088 -0.06339453  0.38363150 -0.30735354
+## NSALE2    -0.05658269  0.24055106 -0.02932187 -0.26515306 -0.04092540  0.12900651 -0.21566104
+## NSALE3     0.02024762 -0.10537125  0.12965432  0.01079927  0.07390348  0.03451341 -0.14329480
+## NSALE4    -0.02895474 -0.03509104  0.16751885 -0.05675389 -0.12375623  0.02407959 -0.01758902
+## NSALE5     0.02998639  0.12148697 -0.12686690  0.15788231  0.15495945 -0.04865510 -0.31089527
+## NSALE6    -0.19737220 -0.10438770  0.37455663 -0.13469460 -0.12757906  0.56894979 -0.22060351
+## NSALE7     0.04594728 -0.12055535 -0.06720603 -0.22011430 -0.04092932 -0.11660787  0.47469217
+## LPRICE1   -4.28741270  1.03192398  1.39870205  1.42080926 -0.24789623  1.14221414  0.41978453
+## LPRICE2    0.60813348 -4.65651982 -0.55593757  0.43919224 -0.18971462  0.01751022 -0.20724822
+## LPRICE3   -0.09598038 -1.90877300 -5.42734434 -0.51100895  1.04589913 -0.75185626 -0.54730109
+## LPRICE4    1.13781735  0.89342271 -1.16647791 -4.84616334 -0.20130401 -0.53258880  0.22146657
+## LPRICE5    1.15223276  1.52539481  2.45035300  0.96955101 -4.02048740  0.86906867 -1.27826228
+## LPRICE6   -1.85448362 -0.92699736  4.44614639 -2.04304693 -1.22949573  3.15448413 -6.28101320
+## LPRICE7    0.59922556 -0.40628855 -1.51981370 -0.16617315 -0.15146697 -0.80683139 -2.38651214</code></pre>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># estimated rank of the coefficient matrix</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>rfit<span class="sc">$</span>rank</span></code></pre></div>
+<pre><code>## [1] 7</code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># rrMixture package</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>rfit2 <span class="ot">&lt;-</span> <span class="fu">rrmix</span>(<span class="at">K =</span> <span class="dv">1</span>, <span class="at">Y =</span> tunaY, <span class="at">X =</span> tunaX, <span class="at">lambda =</span> <span class="dv">3</span>, <span class="at">gamma =</span> <span class="dv">2</span>, <span class="at">est =</span> <span class="st">&quot;ANNP&quot;</span>)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="co"># estimated coefficient matrix</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>rfit2<span class="sc">$</span>para[[<span class="dv">1</span>]]<span class="sc">$</span>B</span></code></pre></div>
+<pre><code>##                 MOVE1       MOVE2       MOVE3       MOVE4       MOVE5       MOVE6       MOVE7
+## intercept 11.03998749  9.83249740  3.56373788 10.70868788 10.19160504  2.72918239 16.83806187
+## NSALE1     0.07121642 -0.08071614  0.39618150 -0.06486088 -0.06339453  0.38363150 -0.30735354
+## NSALE2    -0.05658269  0.24055106 -0.02932187 -0.26515306 -0.04092540  0.12900651 -0.21566104
+## NSALE3     0.02024762 -0.10537125  0.12965432  0.01079927  0.07390348  0.03451341 -0.14329480
+## NSALE4    -0.02895474 -0.03509104  0.16751885 -0.05675389 -0.12375623  0.02407959 -0.01758902
+## NSALE5     0.02998639  0.12148697 -0.12686690  0.15788231  0.15495945 -0.04865510 -0.31089527
+## NSALE6    -0.19737220 -0.10438770  0.37455663 -0.13469460 -0.12757906  0.56894979 -0.22060351
+## NSALE7     0.04594728 -0.12055535 -0.06720603 -0.22011430 -0.04092932 -0.11660787  0.47469217
+## LPRICE1   -4.28741270  1.03192398  1.39870205  1.42080926 -0.24789623  1.14221414  0.41978453
+## LPRICE2    0.60813348 -4.65651982 -0.55593757  0.43919224 -0.18971462  0.01751022 -0.20724822
+## LPRICE3   -0.09598038 -1.90877300 -5.42734434 -0.51100895  1.04589913 -0.75185626 -0.54730109
+## LPRICE4    1.13781735  0.89342271 -1.16647791 -4.84616334 -0.20130401 -0.53258880  0.22146657
+## LPRICE5    1.15223276  1.52539481  2.45035300  0.96955101 -4.02048740  0.86906867 -1.27826228
+## LPRICE6   -1.85448362 -0.92699736  4.44614639 -2.04304693 -1.22949573  3.15448413 -6.28101320
+## LPRICE7    0.59922556 -0.40628855 -1.51981370 -0.16617315 -0.15146697 -0.80683139 -2.38651214</code></pre>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># estimated rank of the coefficient matrix</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>rfit2<span class="sc">$</span>est.rank</span></code></pre></div>
+<pre><code>## [1] 7</code></pre>
+<p>We can see that the two sets of estimation results are consistent.</p>
+</div>
+<div id="wrapping-up" class="section level2">
+<h2>Wrapping up</h2>
+<p>This document illustrates the usage of the <code>rrMixture</code> package. For illustrative purposes, some but not all functions are described. For details of the estimation methods and additional functions of the package, see Kang et al. (2022+) and the R package manual.</p>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<ul>
+<li>Bunea, F., She, Y. &amp; Wegkamp, M. H. (2011), ‘Optimal selection of reduced rank estimators of high-dimensional matrices’, <em>The Annals of Statistics</em> <strong>39</strong>(2), 1282–1309.</li>
+<li>Chen, K., Dong, H. &amp; Chan, K.-S. (2013), ‘Reduced rank regression via adaptive nuclear norm penalization’, <em>Biometrika</em> <strong>100</strong>(4), 901–920.</li>
+<li>Chevalier, J. A., Kashyap, A. K. &amp; Rossi, P. E. (2003), ‘Why don’t prices rise during periods of peak demand? evidence from scanner data’, <em>American Economic Review</em> <strong>93</strong>(1), 15–37.</li>
+<li>Kang, S., Chen, K., &amp; Yao, W. (2022+). ‘Reduced rank estimation in mixtures of multivariate linear regression’.</li>
+<li>Zou, H. (2006), ‘The adaptive lasso and its oracle properties’, <em>Journal of the American statistical association</em> <strong>101</strong>(476), 1418–1429.</li>
+</ul>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

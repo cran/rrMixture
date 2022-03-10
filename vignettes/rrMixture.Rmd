@@ -1,0 +1,287 @@
+---
+title: "Introduction to rrMixture"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to rrMixture}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  %\renewcommand{\vec}[1]{\mathbf{#1}}
+---
+
+```{css, echo = FALSE, eval = FALSE}
+body .main-container {
+  max-width: 1280px !important;
+  width: 1280px !important;
+}
+body {
+  max-width: 1280px !important;
+}
+```
+
+```{r, include = FALSE, eval = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r, message = FALSE, include = FALSE}
+options(width = 200)
+```
+
+## Background
+
+Consider the following multivariate linear regression model where we want to study a relationship between multiple responses and a set of predictors:
+\[
+  Y=XB+E
+\]
+where $Y$ is an $n \times q$ response matrix, $X$ is an $n \times p$ design matrix, $B$ is a $p \times q$ coefficient matrix, and $E$ is an $n \times q$ error matrix. To explore the relationship between $p$ predictors and $q$ responses, our interest is to estimate the coefficient matrix $B$. Traditionally, it can be estimated by
+\[
+  \hat{B}_L=\arg\min_{B} \|Y-XB\|^2_F=(X^\top X)^{-}X^\top Y 
+\]
+where $\|\cdot\|_F$ denotes the Frobenius norm and $(\cdot)^{-}$ denotes a Moore-Penrose inverse. This approach is simple and fast, but it has some limitations:
+
+* It ignores the joint structure of the multivariate response.
+* It may not be feasible with high dimensionality.
+* It assumes a full-rank structure of the coefficient matrix.
+* It assumes the homogeneity of data, i.e., $n$ observations come from a single group.
+
+To overcome the drawbacks, `rrmix` has been developed to fit reduced-rank mixture models, which *simultaneously* take into account the *joint structure of the multivariate response*, possibility of *low-rank structure* of coefficient matrix and *heterogeneity of data*.
+
+## Reduced-rank mixture models in multivariate regression
+
+Suppose the $n$ observations belong to $K$ different subpopulations, implying the heterogeneity of data. The marginal distribution of $\vec{y}_i$ can be assumed to be
+\begin{equation}\label{mixmodel}
+\vec{y}_i|\vec{x}_i\sim \sum_{k=1}^K \pi_k N_q(B_k^\top\vec{x}_i,\Sigma_k)
+\end{equation}
+for $i=1,\cdots,n$ with the Gaussian assumption. Accordingly, the objective function to maximize is the log-likelihood of a $K$-component finite Gaussian mixture model, i.e.,
+\begin{equation*}
+    \mathcal{L}(\boldsymbol{\theta}) = \sum_{i=1}^n \log \left[ \sum_{k=1}^K \pi_k \phi_q(\vec{y}_i;B_k^\top\vec{x}_i,\Sigma_k) \right],~~~\vec{y}_i \in \mathbb{R}^q,
+\end{equation*}
+where $\boldsymbol{\theta}=(\pi_1,B_1,\Sigma_1,\cdots,\pi_K,B_K,\Sigma_K)^\top$ is a collection of the unknown parameters with $\sum_{k=1}^K \pi_k=1$ and $\phi_q(\cdot;\mu,\Sigma)$ denotes the density function of $N_q(\mu,\Sigma)$.
+Under a reduced rank regression framework, our objective function is the penalized log-likelihood which can be written as
+\begin{equation} \label{F}
+    \mathcal{F}(\boldsymbol{\theta}) = \mathcal{L}(\boldsymbol{\theta}) - \mathcal{P}_{\boldsymbol{\lambda}}(\boldsymbol{\theta}),
+\end{equation}
+where $\boldsymbol{\lambda}=(\lambda_1,\cdots,\lambda_K)^\top$ is the tuning parameter. For example, the rank penalty is
+\begin{equation} \label{rp}
+  \mathcal{P}_{\boldsymbol{\lambda}}(\boldsymbol{\theta}) = \frac{1}{2}\sum_{k=1}^K \lambda_k^2 \text{rank}(B_k)
+\end{equation}
+and the adaptive nuclear norm penalty is
+\begin{equation} \label{annp}
+  \mathcal{P}_{\boldsymbol{\lambda}}(\boldsymbol{\theta}) = \sum_{k=1}^K \lambda_k ||XB_k||_{*w}
+\end{equation}
+where $||\cdot||_{*w}=\sum_{i=1}^{p \wedge q} w_id_i(\cdot)$, $n \wedge q = \min(n,q)$, $w_i = d_i^{-\gamma}(X\hat{B}_L)$ following Zou (2006), $d_i(\cdot)$ denotes the $i$th largest singular value of a matrix, and $\gamma$ is a nonnegative constant. The rank-penalized and adaptive nuclear norm penalized estimation have originally been developed in Bunea et al. (2011) and Chen et al. (2013) respectively, for non-mixture cases, and adapted for an extension to mixture models in Kang et al. (2022+).
+
+## Introduction to `rrMixture`
+
+`rrMixture` is an R package for fitting reduced-rank mixture models in multivariate regression via an iterative algorithm. It allows users to
+
+* find an optimal number of mixture components $K$ for a given data set;
+* estimate the parameter $\boldsymbol{\theta}=(\pi_1,B_1,\Sigma_1,\cdots,\pi_K,B_K,\Sigma_K)^\top$ which maximizes $\mathcal{F}(\boldsymbol{\theta})$;
+* find the best tuning parameter(s) $\boldsymbol{\lambda}=(\lambda_1,\cdots,\lambda_K)^\top$ and/or $\gamma$; and
+* determine the ranks of $K$ coefficient matrices.
+
+For simplicity, we assume $\lambda_1=\cdots=\lambda_K=\lambda$ and try to find an optimal value of $\lambda$. As of version 0.1-1, available methods are
+
+* `FR`: full-ranked estimation with $\mathcal{P}_{\boldsymbol{\lambda}}(\boldsymbol{\theta})=0$.
+* `RP`: rank-penalized estimation with $\mathcal{P}_{\boldsymbol{\lambda}}(\boldsymbol{\theta}) = \frac{1}{2}\lambda^2\sum_{k=1}^K \text{rank}(B_k)$.
+* `ANNP`: adaptive nuclear norm penalized estimation with $\mathcal{P}_{\boldsymbol{\lambda}}(\boldsymbol{\theta}) = \lambda \sum_{k=1}^K ||XB_k||_{*w}$. 
+
+This document shows how to make use of `rrMixture` functionalities. `rrMixture` also provides a set of tools to summarize and visualize the estimation results.
+
+## Getting started: Installation
+
+`rrMixture` is  available from CRAN. Install the package and load the library:
+
+```{r setup, eval = FALSE, message = FALSE}
+install.packages("rrMixture")
+library(rrMixture)
+```
+
+```{r, message = FALSE, echo = FALSE}
+library(rrMixture)
+```
+
+## A real data example: `tuna` data
+
+To describe the usage of `rrMixture`, we here consider a real data set which is available within the R package `bayesm`. It contains the volume of weekly sales (`Move`) for seven of the top 10 U.S. brands in the canned tuna product category for $n=338$ weeks between September 1989 and May 1997 along with with a measure of the display activity (`Nsale`) and the log price of each brand (`Lprice`). See Chevalier et al. (2003) for details. The goal is to study the effect of prices and promotional activities on sales for these 7 products; therefore, we have the following $X$ and $Y$ matrices and thus $n=338$, $q=7$, and $p=15$. Try `?tuna` for details.
+
+```{r}
+# Load and pre-process a data set
+library(bayesm)
+data(tuna)
+tunaY <- log(tuna[, c("MOVE1", "MOVE2", "MOVE3", "MOVE4", "MOVE5", "MOVE6", "MOVE7")])
+tunaX <- tuna[, c("NSALE1", "NSALE2", "NSALE3", "NSALE4", "NSALE5", "NSALE6", "NSALE7",
+              "LPRICE1", "LPRICE2", "LPRICE3", "LPRICE4", "LPRICE5", "LPRICE6", "LPRICE7")]
+tunaX <- cbind(intercept = 1, tunaX)
+```
+
+## Parameter estimation using `rrmix()`
+
+`rrmix()` function estimates $\boldsymbol{\theta}$ via an EM algorithm using either the full-ranked, rank penalized, or adaptive nuclear norm penalized mixture models *when $K$, $\lambda$, and $\gamma$ are given*; Later we will discuss another function for finding optimal values of these parameters. For `rrmix()`, we set several arguments such as:
+
+* `K`: number of mixture components.
+* `X` and `Y`: $X$ and $Y$ matrices of data.
+* `est`: estimation method to use, either `"FR"` (full-ranked), `"RP"` (rank penalized), or `"ANNP"` (adaptive nuclear norm penalized).
+* `lambda` and `gamma`: tuning parameter(s) to set. `lambda` is only used for `"RP"` and `"ANNP"`, and `gamma` is only used for `"ANNP"`.
+
+In order to implement the EM algorithm, we need starting values of $\boldsymbol{\theta}$ which can be set by the following arguments:
+
+* `n.init`: number of repetitions of initialization to try. Note that the final estimates of $\boldsymbol{\theta}$ depends on the starting values, so we try to get starting values `n.init` times and use the one with the largest log-likelihood as the final starting values. In order to assign initial mixture membership to each observation, two methods are used: K-means and random clustering.
+* `seed` (optional): seed number for reproducibility of starting values.
+
+An example with `tuna` data:
+
+```{r, cache = TRUE}
+# Parameter estimation with `rrmix()` using the rank penalized method
+tuna.mod <- rrmix(K = 2, X = tunaX, Y = tunaY, est = "RP", lambda = 3,
+                  seed = 100, n.init = 100)
+```
+
+We can find the estimated parameters, $\hat{\boldsymbol{\theta}}=(\hat\pi_1,\hat{B}_1,\hat\Sigma_1,\cdots,\hat\pi_K,\hat{B}_K,\hat\Sigma_K)^\top$, with the command `tuna.mod$para`.
+
+```{r}
+# Estimated parameters
+tuna.mod$para
+```
+
+Besides the estimated parameter $\hat{\boldsymbol{\theta}}$, one of the fundamental tasks in reduced rank estimation is *rank determination*. The estimated ranks of $K$ coefficient matrices can be found by `tuna.mod$est.rank` as follows. In this case with $\lambda = 3$, both coefficient matrices turned out to have full rank since $\min(p,q)=7$.
+
+```{r}
+# Estimated ranks of coefficient matrices
+tuna.mod$est.rank
+```
+
+The package provides `summary()` and `plot()` methods for the `rrmix` object. With the `summary()` function, we can see summarized information of the fitted model. We can see that the EM algorithm is terminated after 57 iterations and the BIC of the fitted model is 3115.056.
+
+```{r}
+# Summarize the estimation results
+summary(tuna.mod)
+```
+
+The `plot()` function shows the log-likelihood and penalized log-likelihood values at each iteration as can be seen below. The ascent property of the penalized log-likelihood can be observed.
+
+```{r, fig.width = 7, fig.height = 5}
+# Visualize the estimation results
+plot(tuna.mod)
+```
+
+## Parameter tuning with `tune.rrmix()`
+
+As shown above, the `rrmix()` function estimates parameters with fixed $K$ (number of mixture components), $\lambda$ and $\gamma$ (tuning parameters). In practice, choosing proper values of $K$, $\lambda$ and $\gamma$ is important. This can be done using the `tune.rrmix()` function by performing a grid search over user-specified parameter ranges. Notice that the full-ranked method (`"FR"`) has no tuning parameters, the rank penalized method (`"RP"`) only has one tuning parameter, $\lambda$. The adaptive nuclear norm penalized method (`"ANNP"`) has two tuning parameters, $\lambda$ and $\gamma$.
+
+Suppose one wants to tune $\lambda$ for the rank penalized method with fixed $K=2$. We can try the following with a set of candidate values of $\lambda$:
+
+```{r, cache = TRUE, results = 'hide'}
+# Parameter tuning with `tune.rrmix()` using the rank penalized method
+tuna.tune1 <- tune.rrmix(K = 2, X = tunaX, Y = tunaY, est = "RP",
+                         lambda = exp(seq(0, log(20), length = 20)),
+                         seed = 100, n.init = 100)
+```
+
+The `tune.rrmix` object also has `summary()` and `plot()` methods. Both functions find an optimal tuning parameter that provides the best performance metric - the smallest BIC in this case - among the given set of candidate values.
+
+```{r}
+# Summarize the results
+summary(tuna.tune1)
+```
+
+When only one parameter is considered for tuning with other parameters being fixed, the parameter is on the x-axis and the performance metric is on the y-axis when using the `plot()` function. In this case, we use a grid of 20 $\lambda$ values equally spaced on the *log* scale, we can set `transform.x = log` for a better illustration.
+
+```{r, fig.width = 7, fig.height = 5}
+# Visualize the results
+plot(tuna.tune1, transform.x = log, xlab = "log(lambda)")
+```
+
+Now suppose one wants to tune both $K$ and $\lambda$. We can try the following command with setting `K.max` instead of `K`. If `K.max` is 3, the `tune.rrmix()` function try all cases where $K$ is 1 through 3. Note that $K=1$ indicates a non-mixture case. Hence, the `tune.rrmix()` function can automatically examine whether assuming heterogeneity of data is appropriate for a given data set.
+
+```{r, cache = TRUE, results = 'hide'}
+# Parameter tuning with `tune.rrmix()` using the rank penalized method
+tuna.tune2 <- tune.rrmix(K.max = 3, X = tunaX, Y = tunaY, est = "RP",
+                         lambda = exp(seq(0, log(20), length = 20)),
+                         seed = 100, n.init = 100)
+```
+
+```{r}
+# Summarize the results
+summary(tuna.tune2)
+```
+
+When $K$ and $\lambda$ are tuned, a contour plot of the performance metric (BIC) can be drawn using the `plot()` function with $K$ and $\lambda$ being on the x- and y-axis, respectively.
+
+```{r, fig.width = 7, fig.height = 5}
+# Visualize the results
+plot(tuna.tune2, transform.y = log, ylab = "log(lambda)")
+```
+
+As we can see above, the best model is the one with $K=2$ and $\lambda = 8.728963$, implying that the data is heterogeneous and consisting of 2 subpopulations.
+
+Note also that, if candidate values of $\lambda$ are not pre-specified, i.e., if `lambda = NULL` in `tune.rrmix()`, a data-adaptive range of $\lambda$ for tuning will internally be determined. In this case, users can set the argument `n.lambda` which specifies the number of $\lambda$ values to be explored in the range. Furthermore, if candidate values of $\gamma$ are not specified with `est = "ANNP"` in `tune.rrmix()`, `gamma = 2` will be used by default since it generally showed good performance in Chen et al. (2013).
+
+## Interpretation of final model
+
+Let's see how we can interpret the final model determined by `tune.rrmix()`. As mentioned earlier, $\hat{\boldsymbol{\theta}}=(\hat\pi_1,\hat{B}_1,\hat\Sigma_1,\cdots,\hat\pi_K,\hat{B}_K,\hat\Sigma_K)^\top$ can be obtained by `best.mod$para`.
+ 
+```{r}
+# The final model
+best.K <- summary(tuna.tune2)$best.K
+best.lambda <- summary(tuna.tune2)$best.lambda
+best.mod <- rrmix(K = best.K, X = tunaX, Y = tunaY, est = "RP", lambda = best.lambda,
+                  seed = 100, n.init = 100)
+summary(best.mod)
+best.mod$para
+```
+
+The estimated ranks of $\hat{B}_1$ and $\hat{B}_2$ are 7 and 4, respectively, as follows. In this case, the first coefficient matrix turned out to have full rank and the second coefficient matrix had low-rank structure since full rank is $\min(p,q)=7$.
+
+```{r}
+# Estimated ranks of coefficient matrices
+best.mod$est.rank
+```
+
+We can also get information on the membership of mixture components using the following command. The final model suggests that, among $n=338$ observations, 299 observations belong to the first mixture component and the remaining 39 observations belong to the second mixture component.
+
+```{r}
+# Membership information of mixture components
+best.mod$ind
+best.mod$n.est
+```
+
+## Comparison with existing R package `rrpack`
+
+The package `rrpack` allows users to use a variety of reduced-rank estimation methods in multivariate regression. For example, the `rrr()` function with the argument `penaltySVD = "ann"` provides a solution of the adaptive nuclear norm penalized estimator (Chen et al., 2013). One difference between the `rrr()` function from the `rrpack` package and the `rrmix()` function from the `rrMixture` package is that `rrmix()` incorporates the idea of mixture models. Therefore, when the number of mixture components is $K=1$, `rrmix()` produces the same solution with that of `rrr()` with the same tuning parameter(s). Let's see an example using the `tuna` data.
+
+```{r, message = FALSE}
+# rrpack package
+require(rrpack)
+rfit <- rrr(Y = as.matrix(tunaY), X = as.matrix(tunaX),
+            modstr = list(lambda = 3, gamma = 2), penaltySVD = "ann")
+# estimated coefficient matrix
+coef(rfit)
+# estimated rank of the coefficient matrix
+rfit$rank
+```
+
+```{r}
+# rrMixture package
+rfit2 <- rrmix(K = 1, Y = tunaY, X = tunaX, lambda = 3, gamma = 2, est = "ANNP")
+# estimated coefficient matrix
+rfit2$para[[1]]$B
+# estimated rank of the coefficient matrix
+rfit2$est.rank
+```
+
+We can see that the two sets of estimation results are consistent.
+
+## Wrapping up
+
+This document illustrates the usage of the `rrMixture` package. For illustrative purposes, some but not all functions are described. For details of the estimation methods and additional functions of the package, see Kang et al. (2022+) and the R package manual.
+
+## References
+
+* Bunea,  F.,  She,  Y. & Wegkamp,  M. H. (2011),  ‘Optimal selection of reduced rank estimators of high-dimensional matrices’, *The Annals of Statistics* **39**(2), 1282–1309.
+* Chen,  K.,  Dong,  H.  &  Chan,  K.-S.  (2013),  ‘Reduced  rank  regression  via  adaptive  nuclear  norm penalization’, *Biometrika* **100**(4), 901–920.
+* Chevalier, J. A., Kashyap, A. K. & Rossi, P. E. (2003), ‘Why don’t prices rise during periods of peak demand? evidence from scanner data’, *American Economic Review* **93**(1), 15–37.
+* Kang, S., Chen, K., & Yao, W. (2022+). ‘Reduced rank estimation in mixtures of multivariate linear regression’.
+* Zou, H. (2006), ‘The adaptive lasso and its oracle properties’, *Journal of the American statistical association* **101**(476), 1418–1429.
