@@ -82,7 +82,7 @@ where $||\cdot||_{*w}=\sum_{i=1}^{p \wedge q} w_id_i(\cdot)$, $n \wedge q = \min
 * find the best tuning parameter(s) $\boldsymbol{\lambda}=(\lambda_1,\cdots,\lambda_K)^\top$ and/or $\gamma$; and
 * determine the ranks of $K$ coefficient matrices.
 
-For simplicity, we assume $\lambda_1=\cdots=\lambda_K=\lambda$ and try to find an optimal value of $\lambda$. As of version 0.1-1, available methods are
+For simplicity, we assume $\lambda_1=\cdots=\lambda_K=\lambda$ and try to find an optimal value of $\lambda$. As of version 0.1-2, available methods are
 
 * `FR`: full-ranked estimation with $\mathcal{P}_{\boldsymbol{\lambda}}(\boldsymbol{\theta})=0$.
 * `RP`: rank-penalized estimation with $\mathcal{P}_{\boldsymbol{\lambda}}(\boldsymbol{\theta}) = \frac{1}{2}\lambda^2\sum_{k=1}^K \text{rank}(B_k)$.

@@ -179,7 +179,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>find the best tuning parameter(s) <span class="math inline">\(\boldsymbol{\lambda}=(\lambda_1,\cdots,\lambda_K)^\top\)</span> and/or <span class="math inline">\(\gamma\)</span>; and</li>
 <li>determine the ranks of <span class="math inline">\(K\)</span> coefficient matrices.</li>
 </ul>
-<p>For simplicity, we assume <span class="math inline">\(\lambda_1=\cdots=\lambda_K=\lambda\)</span> and try to find an optimal value of <span class="math inline">\(\lambda\)</span>. As of version 0.1-1, available methods are</p>
+<p>For simplicity, we assume <span class="math inline">\(\lambda_1=\cdots=\lambda_K=\lambda\)</span> and try to find an optimal value of <span class="math inline">\(\lambda\)</span>. As of version 0.1-2, available methods are</p>
 <ul>
 <li><code>FR</code>: full-ranked estimation with <span class="math inline">\(\mathcal{P}_{\boldsymbol{\lambda}}(\boldsymbol{\theta})=0\)</span>.</li>
 <li><code>RP</code>: rank-penalized estimation with <span class="math inline">\(\mathcal{P}_{\boldsymbol{\lambda}}(\boldsymbol{\theta}) = \frac{1}{2}\lambda^2\sum_{k=1}^K \text{rank}(B_k)\)</span>.</li>

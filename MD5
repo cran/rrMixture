@@ -1,4 +1,4 @@
-daacff8b3b478ef8d344d4c6a0268ef3 *DESCRIPTION
+79467735fe4d84607dd9f8eb2864c1be *DESCRIPTION
 a357a28df020e7086cb817e85ba5a58f *NAMESPACE
 461ae198e8e01cb99555ccb7a901d7a6 *R/RcppExports.R
 51b9f0957b3a835dcb39ad0f5f8777a3 *R/initialize.para.R
@@ -11,8 +11,8 @@ ac2346d5223696886ba68cc763e956fa *R/rrMixture.R
 58f0bf0a1649d4b2870f7a3caefabd5a *R/tune.R
 b43b1168369037e9de13a00ad6f8f0e5 *build/vignette.rds
 73e107a67b3e4fe731a9fff27bacd47e *inst/doc/rrMixture.R
-ba2b706741be741c14b5b5d243b36b21 *inst/doc/rrMixture.Rmd
-c9f0cc4b690f2b420b637fdecb0f549b *inst/doc/rrMixture.html
+cb263f3b93735f4c9b8752b4f924a7db *inst/doc/rrMixture.Rmd
+07f8f728e94f702a25e883d5c3ad81b0 *inst/doc/rrMixture.html
 446d3ecc9c7c963cebfd1f5f3af70484 *man/initialize.para.Rd
 4ec680bd0679ca2983f254765a11dccf *man/plot.Rd
 980186416fcc758654bf513a1c5d781f *man/rrMixture.Rd
@@ -24,4 +24,4 @@ c9f0cc4b690f2b420b637fdecb0f549b *inst/doc/rrMixture.html
 2a6f9e9e044a78154d3cfda5936d6f48 *src/Makevars.win
 48d22bfdd03d40d35ce93f3ed305b90e *src/RcppExports.cpp
 7bc743946fd00d00ea6339f1627559c9 *src/dmvnormC.cpp
-ba2b706741be741c14b5b5d243b36b21 *vignettes/rrMixture.Rmd
+cb263f3b93735f4c9b8752b4f924a7db *vignettes/rrMixture.Rmd
